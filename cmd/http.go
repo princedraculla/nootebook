@@ -1,6 +1,6 @@
-package cmd
+package cmd/home/amir/GitHub/without-redis/logger/home/amir/GitHub/without-redis/logger
 
-import (
+import (/home/amir/GitHub/without-redis/logger
 	"github.com/docker/docker/daemon/logger"
 	"github.com/spf13/cobra"
 )
