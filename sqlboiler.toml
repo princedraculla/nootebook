@@ -1,0 +1,23 @@
+# Directory in which the generated static code is to be kept.
+output = "internal/repository/boiler_models"
+
+# Each time new code is generated, completely wipe out the old one.
+wipe = true
+
+# The `go` package name used in the generated code.
+pkgname = "boiler_models"
+
+# Adds global variant of the generated functions, more on this later.
+add-global-variants = true
+
+# Generates code for enum types as well.
+add-enum-types = true
+
+
+[psql]
+dbname = "ocs"
+host = "localhost"
+port = 5436
+user = "ocs"
+pass = "ocs1234"
+sslmode= "disable"

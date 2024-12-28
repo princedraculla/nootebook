@@ -7,14 +7,19 @@ import (
 )
 
 var (
-	ContactRepo    = "any"
-	contactService = services.NewContactService(&ContactRepo)
-	ctx            = context.Background()
+	ContactRepo       = "any"
+	contactService    = services.NewContactService(&ContactRepo)
+	ctx               = context.Background()
+	contactController = NewContactController(contactService)
 )
-var
-func registerRoutes(app *fiber.App) {
-	contactController := "sa"
-	apiV1 := app.Group("/v1")
 
-	apiV1.Get("/contacts", )
+func registerRoutes(app *fiber.App) {
+	v1 := app.Group("/v1")
+
+	v1.Post("/insert", contactController.Insert)
+	v1.Get("/contact/:name", contactController.Get)
+	v1.Get("/contacts", contactController.GetAll)
+	v1.Put("/contact/:name", contactController.Update)
+	v1.Delete("/contact/:name", contactController.Delete)
+
 }

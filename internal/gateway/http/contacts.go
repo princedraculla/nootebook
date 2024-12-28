@@ -6,7 +6,7 @@ import (
 	service_models "nootebook.com/internal/services/service_models/types"
 )
 
-type Contacts struct {
+type ContactController struct {
 	ContactService services.Contact
 }
 
@@ -14,13 +14,16 @@ type createContactParams struct {
 	PhoneNunmber []service_models.PhoneNumber
 	Name         string
 }
+type UpdateContactParams struct {
+	phoneNunmber []service_models.PhoneNumber
+}
 
-func NewContacts(contactService services.Contact) *Contacts {
-	return &Contacts{
+func NewContactController(contactService services.Contact) *ContactController {
+	return &ContactController{
 		ContactService: contactService,
 	}
 }
-func (c *Contacts) Insert(ctx *fiber.Ctx) error {
+func (c *ContactController) Insert(ctx *fiber.Ctx) error {
 	var params createContactParams
 	if err := ctx.BodyParser(&params); err != nil {
 		return err
@@ -35,7 +38,7 @@ func (c *Contacts) Insert(ctx *fiber.Ctx) error {
 	return ctx.JSON(err)
 }
 
-func (c *Contacts) Get(ctx *fiber.Ctx) error {
+func (c *ContactController) Get(ctx *fiber.Ctx) error {
 	name := ctx.Params("name")
 	contact, err := c.ContactService.Get(ctx.Context(), name)
 	if err != nil {
@@ -44,7 +47,7 @@ func (c *Contacts) Get(ctx *fiber.Ctx) error {
 	return ctx.JSON(contact)
 }
 
-func (c *Contacts) GetAll(ctx *fiber.Ctx) error {
+func (c *ContactController) GetAll(ctx *fiber.Ctx) error {
 	contacts, err := c.ContactService.GetAll(ctx.Context())
 	if err != nil {
 		return err
@@ -52,4 +55,25 @@ func (c *Contacts) GetAll(ctx *fiber.Ctx) error {
 	return ctx.JSON(contacts)
 }
 
-func (c *Contacts) 
+func (c *ContactController) Delete(ctx *fiber.Ctx) error {
+	name := ctx.Params("name")
+	err := c.ContactService.Delete(ctx.Context(), &name)
+	if err != nil {
+		return err
+	}
+	msg := map[string]string{
+		"status": "success",
+	}
+
+	return ctx.JSON(msg)
+}
+
+func (c *ContactController) Update(ctx *fiber.Ctx) error {
+	var updateParams UpdateContactParams
+	newPhoneNumber := ctx.BodyParser(&updateParams)
+	updatedPhoneNumber, err := c.ContactService.Update(ctx.Context(), newPhoneNumber)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(updatedPhoneNumber)
+}

@@ -10,17 +10,17 @@ type Contact interface {
 	Get(ctx context.Context, name string) (*service_models.Contact, error)
 	GetAll(ctx context.Context) ([]*service_models.Contact, error)
 	Insert(ctx context.Context, phonebook *service_models.Contact) error
-	Update(ctx context.Context, filter any, update any) (*service_models.Contact, error)
-	Delete(ctx context.Context, name string) error
+	Update(ctx context.Context, update any) (*service_models.Contact, error)
+	Delete(ctx context.Context, name *string) error
 }
 
 type ContactService struct {
-	contectRepo any
+	contactRepo any
 }
 
-func NewContactService(cRepo any) *ContactService {
+func NewContactService(cRepo any) Contact {
 	return &ContactService{
-		contectRepo: cRepo,
+		contactRepo: cRepo,
 	}
 }
 
@@ -41,10 +41,10 @@ func (cs *ContactService) Insert(ctx context.Context, phonebook *service_models.
 	return nil
 }
 
-func (cs *ContactService) Update(ctx context.Context, filter any, update any) (*service_models.Contact, error) {
+func (cs *ContactService) Update(ctx context.Context, update any) (*service_models.Contact, error) {
 	return nil, nil
 }
 
-func (cs *ContactService) Delete(ctx context.Context, name string) error {
+func (cs *ContactService) Delete(ctx context.Context, name *string) error {
 	return nil
 }

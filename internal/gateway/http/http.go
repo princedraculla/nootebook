@@ -1,9 +1,13 @@
 package http
 
 import (
-	"fmt"
+	"flag"
 	"github.com/gofiber/fiber/v2"
 	"net/http"
+)
+
+var (
+	listenAddr = flag.String("listenAddr", ":5000", "server running properly")
 )
 
 type Error struct {
@@ -58,5 +62,8 @@ func ServerInit() {
 			return c.Status(apiError.Code).JSON(apiError)
 		},
 	})
-	fmt.Println(app)
+	registerRoutes(app)
+	if err := app.Listen(*listenAddr); err != nil {
+		panic(err)
+	}
 }
