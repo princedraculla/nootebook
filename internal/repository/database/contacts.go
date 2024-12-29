@@ -42,10 +42,35 @@ func (cr *ContactRepo) Create(ctx context.Context, contact *service_models.Conta
 }
 
 func (cr *ContactRepo) GetAll(ctx context.Context) ([]*service_models.Contact, error) {
-	//var boilerContacts boiler_models.Contact
-	//var boilerPhoneNumbers []*boiler_models.PhoneNumber
-	//if err := boilerContacts
-	return nil, nil
+	var serviceContacts []*service_models.Contact
+	var err error
+	contacts, err := boiler_models.Contacts(qm.Load(boiler_models.ContactRels.PhoneNumbers)).All(ctx, exec(cr.dbRead, cr.tx))
+	if err != nil {
+		return nil, err
+	}
+
+	for _, contact := range contacts {
+		var phoneNumbers []service_models.PhoneNumber
+		for _, pn := range contact.R.PhoneNumbers {
+			phoneNumbers = append(phoneNumbers, service_models.PhoneNumber{
+				Type:   pn.Type,
+				Number: pn.Number,
+			})
+		}
+		serviceContacts = append(serviceContacts, &service_models.Contact{
+			Name:         contact.Name,
+			PhoneNumbers: phoneNumbers,
+		})
+	}
+	return serviceContacts, nil
+}
+
+func (cr *ContactRepo) Delete(ctx context.Context, name *string) error {
+	_, err := boiler_models.Contacts(qm.Where("name = ?", name)).DeleteAll(ctx, exec(cr.dbWrite, cr.tx))
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (cr *ContactRepo) Get(ctx context.Context, name string) (*service_models.Contact, error) {
@@ -63,6 +88,42 @@ func (cr *ContactRepo) Get(ctx context.Context, name string) (*service_models.Co
 		})
 	}
 	return serviceContact, nil
+}
+
+func (cr *ContactRepo) Update(ctx context.Context, name string, phoneNumber *service_models.PhoneNumber) error {
+	//updatePhoneNumberType := boiler_models.PhoneNumber{
+	//	Type:   phoneNumber.Type,
+	//	Number: phoneNumber.Number,
+	//}
+	var err error
+	contact, err := boiler_models.Contacts(qm.Where("name = ?", name)).One(ctx, exec(cr.dbWrite, cr.tx))
+	if err != nil {
+		return err
+	}
+
+	phonenumber, err := boiler_models.PhoneNumbers(qm.Where("contact_id = ?", contact.ID)).All(ctx, exec(cr.dbWrite, cr.tx))
+	if err != nil {
+		return err
+	}
+	if phonenumber[0].Number == phoneNumber.Number {
+		for _, pn := range phonenumber {
+			pn.Number = phoneNumber.Number
+			pn.Type = phoneNumber.Type
+			_, err = pn.Update(ctx, exec(cr.dbWrite, cr.tx), boil.Whitelist("number", "type"))
+			if err != nil {
+				return err
+			}
+		}
+	}
+	//_, err := updatePhoneNumberType.Update(ctx, exec(cr.dbWrite, cr.tx), qm.Where("contact_id = ?", contact.ID),
+	//	boil.Whitelist("phone_numbers.Type"),
+	//	boil.Whitelist("phone_numbers.Number")
+	//	)
+	//if err != nil {
+	//	return err
+	//}
+
+	return nil
 }
 
 func NewContactRepo(dbRead *sql.DB, dbWrite *sql.DB) *ContactRepo {

@@ -10,7 +10,6 @@ import (
 
 func PostgresConn(host, port, user, password, dbname, sslmode string, maxopenconn, maxidleconn int) (*sql.DB, error) {
 	connString := PostgresURI(host, port, user, password, dbname, sslmode)
-	fmt.Println("connection option...", connString)
 	conn, err := sql.Open("postgres", connString)
 	if err != nil {
 		return nil, err

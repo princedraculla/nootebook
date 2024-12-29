@@ -3,7 +3,6 @@ package http
 import (
 	"context"
 	"flag"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"nootebook.com/internal/repository/database"
 	"nootebook.com/internal/services"
@@ -25,7 +24,6 @@ func registerRoutes(app *fiber.App) {
 	sslmode := os.Getenv("sslmode")
 	dbPort := os.Getenv("port")
 
-	fmt.Println(dbHost, dbPort, dbUser, dbPass, dbName, sslmode, 20, 10)
 	db, err := utils.PostgresConn(dbHost, dbPort, dbUser, dbPass, dbName, sslmode, 20, 10)
 	if err != nil {
 		panic(err)
