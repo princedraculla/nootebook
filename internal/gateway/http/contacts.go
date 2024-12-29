@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"nootebook.com/internal/services"
 	service_models "nootebook.com/internal/services/service_models/types"
@@ -11,11 +12,11 @@ type ContactController struct {
 }
 
 type createContactParams struct {
-	PhoneNunmber []service_models.PhoneNumber
-	Name         string
+	PhoneNumbers []service_models.PhoneNumber `json:"phone_numbers"`
+	Name         string                       `json:"name"`
 }
 type UpdateContactParams struct {
-	phoneNunmber []service_models.PhoneNumber
+	phoneNumber []service_models.PhoneNumber
 }
 
 func NewContactController(contactService services.Contact) *ContactController {
@@ -28,8 +29,10 @@ func (c *ContactController) Insert(ctx *fiber.Ctx) error {
 	if err := ctx.BodyParser(&params); err != nil {
 		return err
 	}
+	fmt.Printf("body is %+v\n", params)
+
 	err := c.ContactService.Insert(ctx.Context(), &service_models.Contact{
-		PhoneNumbers: params.PhoneNunmber,
+		PhoneNumbers: params.PhoneNumbers,
 		Name:         params.Name,
 	})
 	if err != nil {

@@ -1,13 +1,8 @@
 package http
 
 import (
-	"flag"
 	"github.com/gofiber/fiber/v2"
 	"net/http"
-)
-
-var (
-	listenAddr = flag.String("listenAddr", ":5000", "server running properly")
 )
 
 type Error struct {
