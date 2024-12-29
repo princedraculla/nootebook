@@ -15,9 +15,9 @@ add-enum-types = true
 
 
 [psql]
-dbname = "ocs"
+dbname = "phonebook"
 host = "localhost"
-port = 5436
-user = "ocs"
-pass = "ocs1234"
+port = 5432
+user = "amir"
+pass = "amir1234"
 sslmode= "disable"
