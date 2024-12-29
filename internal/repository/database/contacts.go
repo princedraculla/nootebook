@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"nootebook.com/internal/repository/boiler_models"
@@ -91,7 +92,7 @@ func (cr *ContactRepo) Get(ctx context.Context, name string) (*service_models.Co
 }
 
 func (cr *ContactRepo) Update(ctx context.Context, name string, phoneNumber *service_models.PhoneNumber) error {
-	//updatePhoneNumberType := boiler_models.PhoneNumber{
+	//updatePhoneNumber := boiler_models.PhoneNumber{
 	//	Type:   phoneNumber.Type,
 	//	Number: phoneNumber.Number,
 	//}
@@ -101,24 +102,18 @@ func (cr *ContactRepo) Update(ctx context.Context, name string, phoneNumber *ser
 		return err
 	}
 
-	phonenumber, err := boiler_models.PhoneNumbers(qm.Where("contact_id = ?", contact.ID)).All(ctx, exec(cr.dbWrite, cr.tx))
+	phonenumber, err := boiler_models.PhoneNumbers(qm.Where("contact_id = ?, type = ?", contact.ID, phoneNumber.Type)).One(ctx, exec(cr.dbRead, cr.tx))
 	if err != nil {
 		return err
 	}
-	if phonenumber[0].Number == phoneNumber.Number {
-		for _, pn := range phonenumber {
-			pn.Number = phoneNumber.Number
-			pn.Type = phoneNumber.Type
-			_, err = pn.Update(ctx, exec(cr.dbWrite, cr.tx), boil.Whitelist("number", "type"))
-			if err != nil {
-				return err
-			}
-		}
-	}
-	//_, err := updatePhoneNumberType.Update(ctx, exec(cr.dbWrite, cr.tx), qm.Where("contact_id = ?", contact.ID),
-	//	boil.Whitelist("phone_numbers.Type"),
-	//	boil.Whitelist("phone_numbers.Number")
-	//	)
+	fmt.Println(phonenumber)
+	//for _, pn := range phonenumber {
+	//	fmt.Println(pn.Number)
+	//	fmt.Println(pn.Type)
+	//	fmt.Println(pn.ID)
+	//	//_, err = updatePhoneNumber.Update(ctx, exec(cr.dbWrite, cr.tx), boil.Whitelist("type", "number"))
+	//}
+
 	//if err != nil {
 	//	return err
 	//}
