@@ -2,7 +2,5 @@ build:
 	@go build -o bin/app.go
 
 run: build
-	@./bin/app.go
+	@./bin/app.go http
 
-http:
-	@go run main.go http

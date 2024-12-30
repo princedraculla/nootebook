@@ -29,11 +29,13 @@ func LoadLogger(logLevel int8) {
 	Logger = logger.Sugar()
 }
 
+var Logg *zap.Logger
+
 func InitializeLogger() *zap.Logger {
 	// Create a new production logger
-	logger, err := zap.NewProduction()
+	Logg, err := zap.NewProduction()
 	if err != nil {
 		panic(err) // Handle the error appropriately in real applications
 	}
-	return logger
+	return Logg
 }
