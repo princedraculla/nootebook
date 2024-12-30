@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"nootebook.com/internal/repository/database"
-
 	service_models "nootebook.com/internal/services/service_models/types"
 )
 
@@ -11,8 +10,8 @@ type Contact interface {
 	Get(ctx context.Context, name string) (*service_models.Contact, error)
 	GetAll(ctx context.Context) ([]*service_models.Contact, error)
 	Insert(ctx context.Context, phonebook *service_models.Contact) error
-	Update(ctx context.Context, name string, update *service_models.PhoneNumber) error
-	Delete(ctx context.Context, name *string) error
+	UpdateName(ctx context.Context, name string, updateNameParams string) error
+	Delete(ctx context.Context, name string) error
 }
 
 type ContactService struct {
@@ -37,10 +36,10 @@ func (cs *ContactService) Insert(ctx context.Context, contact *service_models.Co
 	return cs.contactRepo.Create(ctx, contact)
 }
 
-func (cs *ContactService) Update(ctx context.Context, name string, update *service_models.PhoneNumber) error {
-	return cs.contactRepo.Update(ctx, name, update)
+func (cs *ContactService) UpdateName(ctx context.Context, name string, updateNameParams string) error {
+	return cs.contactRepo.UpdateName(ctx, name, updateNameParams)
 }
 
-func (cs *ContactService) Delete(ctx context.Context, name *string) error {
+func (cs *ContactService) Delete(ctx context.Context, name string) error {
 	return cs.contactRepo.Delete(ctx, name)
 }

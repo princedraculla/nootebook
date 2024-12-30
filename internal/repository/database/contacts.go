@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"nootebook.com/internal/repository/boiler_models"
@@ -13,9 +12,9 @@ import (
 type Contact interface {
 	Get(ctx context.Context, name string) (*service_models.Contact, error)
 	GetAll(ctx context.Context) ([]*service_models.Contact, error)
-	Create(ctx context.Context, contact *service_models.Contact) (*service_models.Contact, error)
+	Create(ctx context.Context, contact *service_models.Contact) error
 	Delete(ctx context.Context, name string) error
-	Update(ctx context.Context, name string, contact *service_models.Contact) error
+	UpdateName(ctx context.Context, name string, updateNameParams string) error
 }
 
 type ContactRepo struct {
@@ -66,7 +65,7 @@ func (cr *ContactRepo) GetAll(ctx context.Context) ([]*service_models.Contact, e
 	return serviceContacts, nil
 }
 
-func (cr *ContactRepo) Delete(ctx context.Context, name *string) error {
+func (cr *ContactRepo) Delete(ctx context.Context, name string) error {
 	_, err := boiler_models.Contacts(qm.Where("name = ?", name)).DeleteAll(ctx, exec(cr.dbWrite, cr.tx))
 	if err != nil {
 		return err
@@ -91,34 +90,13 @@ func (cr *ContactRepo) Get(ctx context.Context, name string) (*service_models.Co
 	return serviceContact, nil
 }
 
-func (cr *ContactRepo) Update(ctx context.Context, name string, phoneNumber *service_models.PhoneNumber) error {
-	//updatePhoneNumber := boiler_models.PhoneNumber{
-	//	Type:   phoneNumber.Type,
-	//	Number: phoneNumber.Number,
-	//}
-	var err error
-	contact, err := boiler_models.Contacts(qm.Where("name = ?", name)).One(ctx, exec(cr.dbWrite, cr.tx))
-	if err != nil {
-		return err
+func (cr *ContactRepo) UpdateName(ctx context.Context, name string, updateNameParams string) error {
+	c := &boiler_models.Contact{
+		Name: name,
 	}
 
-	phonenumber, err := boiler_models.PhoneNumbers(qm.Where("contact_id = ?, type = ?", contact.ID, phoneNumber.Type)).One(ctx, exec(cr.dbRead, cr.tx))
-	if err != nil {
-		return err
-	}
-	fmt.Println(phonenumber)
-	//for _, pn := range phonenumber {
-	//	fmt.Println(pn.Number)
-	//	fmt.Println(pn.Type)
-	//	fmt.Println(pn.ID)
-	//	//_, err = updatePhoneNumber.Update(ctx, exec(cr.dbWrite, cr.tx), boil.Whitelist("type", "number"))
-	//}
-
-	//if err != nil {
-	//	return err
-	//}
-
-	return nil
+	_, err := c.Update(ctx, exec(cr.dbWrite, cr.tx), boil.Whitelist(boiler_models.ContactColumns.Name))
+	return err
 }
 
 func NewContactRepo(dbRead *sql.DB, dbWrite *sql.DB) *ContactRepo {

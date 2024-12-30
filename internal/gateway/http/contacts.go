@@ -16,6 +16,10 @@ type createContactParams struct {
 	Name         string                       `json:"name"`
 }
 
+type UpdateNameParams struct {
+	Name string `json:"name"`
+}
+
 func NewContactController(contactService services.Contact) *ContactController {
 	return &ContactController{
 		ContactService: contactService,
@@ -57,7 +61,7 @@ func (c *ContactController) GetAll(ctx *fiber.Ctx) error {
 
 func (c *ContactController) Delete(ctx *fiber.Ctx) error {
 	name := ctx.Params("name")
-	err := c.ContactService.Delete(ctx.Context(), &name)
+	err := c.ContactService.Delete(ctx.Context(), name)
 	if err != nil {
 		return err
 	}
@@ -69,12 +73,12 @@ func (c *ContactController) Delete(ctx *fiber.Ctx) error {
 }
 
 func (c *ContactController) Update(ctx *fiber.Ctx) error {
-	var updateParams *service_models.PhoneNumber
-	if err := ctx.BodyParser(&updateParams); err != nil {
+	var updateNameParams *UpdateNameParams
+	if err := ctx.BodyParser(&updateNameParams); err != nil {
 		return err
 	}
 	name := ctx.Params("name")
-	err := c.ContactService.Update(ctx.Context(), name, updateParams)
+	err := c.ContactService.UpdateName(ctx.Context(), name, updateNameParams.Name)
 	if err != nil {
 		return err
 	}
