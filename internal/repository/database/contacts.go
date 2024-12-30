@@ -14,7 +14,7 @@ type Contact interface {
 	GetAll(ctx context.Context) ([]*service_models.Contact, error)
 	Create(ctx context.Context, contact *service_models.Contact) error
 	Delete(ctx context.Context, name string) error
-	UpdateName(ctx context.Context, name string, updateNameParams string``) error
+	UpdateName(ctx context.Context, name string, updateNameParams string) error
 }
 
 type ContactRepo struct {
