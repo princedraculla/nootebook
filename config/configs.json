@@ -1,15 +1,25 @@
 {
-  "databases": {
+  "database": {
     "postgres": {
       "host": "localhost",
       "port": "5432",
       "user": "amir",
-      "pass": "amir123",
+      "pass": "amir1234",
       "database_name": "phonebook",
       "ssl_mode": "disable",
       "max_open_conns": 20,
       "max_idle_conns": 10,
       "timeout": "30s"
     }
+  },
+  "general": {
+    "listen": "localhost:10001",
+    "log_level": 0,
+    "shutdown_timeout": "5s",
+    "dictionaries_path": "/home/mhg14/WITHOUT-REDIS/Stable-X/configs/dict",
+    "exports_path": "/home/mhg14/WITHOUT-REDIS/StableX/exports",
+    "internal_mcc": "418",
+    "internal_mnc": "020",
+    "postpaid": false
   }
 }

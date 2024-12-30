@@ -3,3 +3,6 @@ build:
 
 run: build
 	@./bin/app.go
+
+http:
+	@go run main.go http

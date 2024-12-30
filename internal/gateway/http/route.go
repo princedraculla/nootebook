@@ -4,10 +4,10 @@ import (
 	"context"
 	"flag"
 	"github.com/gofiber/fiber/v2"
+	"nootebook.com/config"
 	"nootebook.com/internal/repository/database"
 	"nootebook.com/internal/services"
 	"nootebook.com/utils"
-	"os"
 )
 
 var (
@@ -17,14 +17,17 @@ var (
 
 func registerRoutes(app *fiber.App) {
 
-	dbHost := os.Getenv("host")
-	dbUser := os.Getenv("user")
-	dbPass := os.Getenv("pass")
-	dbName := os.Getenv("dbname")
-	sslmode := os.Getenv("sslmode")
-	dbPort := os.Getenv("port")
-
-	db, err := utils.PostgresConn(dbHost, dbPort, dbUser, dbPass, dbName, sslmode, 20, 10)
+	db, err := utils.PostgresConn(
+		config.AppConfig.Database.Postgres.Host,
+		config.AppConfig.Database.Postgres.Port,
+		config.AppConfig.Database.Postgres.User,
+		config.AppConfig.Database.Postgres.Pass,
+		config.AppConfig.Database.Postgres.DBNAME,
+		config.AppConfig.Database.Postgres.SSLMODE,
+		config.AppConfig.Database.Postgres.MaxOpenConns,
+		config.AppConfig.Database.Postgres.MaxIdleConns,
+		config.AppConfig.Database.Postgres.Timeout,
+	)
 	if err != nil {
 		panic(err)
 	}

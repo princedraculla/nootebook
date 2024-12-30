@@ -7,9 +7,11 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"nootebook.com/cmd"
+	"nootebook.com/config"
 )
 
 func main() {
+	config.LoadConfigFile("./config/")
 	cmd.Execute()
 }
 
