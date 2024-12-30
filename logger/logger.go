@@ -28,3 +28,12 @@ func LoadLogger(logLevel int8) {
 	defer logger.Sync()
 	Logger = logger.Sugar()
 }
+
+func InitializeLogger() *zap.Logger {
+	// Create a new production logger
+	logger, err := zap.NewProduction()
+	if err != nil {
+		panic(err) // Handle the error appropriately in real applications
+	}
+	return logger
+}
