@@ -1,0 +1,15 @@
+{
+  "databases": {
+    "postgres": {
+      "host": "localhost",
+      "port": "5432",
+      "user": "amir",
+      "pass": "amir123",
+      "database_name": "phonebook",
+      "ssl_mode": "disable",
+      "max_open_conns": 20,
+      "max_idle_conns": 10,
+      "timeout": "30s"
+    }
+  }
+}
